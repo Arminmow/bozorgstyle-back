@@ -38,4 +38,19 @@ class ProductController extends Controller {
         return response()->json( $product );
     }
 
+    // Get all men's products
+     public function getMenProducts()
+     {
+         $menProducts = Product::where('gender', 'men')->get();
+         return response()->json($menProducts);  
+     }
+
+     // Get all women's products
+
+    public function getWomenProducts() {
+        $womenProducts = Product::where( 'gender', 'women' )->get();
+        return response()->json( $womenProducts );
+
+    }
+
 }
