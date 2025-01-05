@@ -29,12 +29,7 @@ class ProductController extends Controller {
     }
 
     public function show( $id ) {
-        $product = Product::find( $id );
-
-        if ( !$product ) {
-            return response()->json( [ 'error' => 'Product not found' ], 404 );
-        }
-
+        $product = Product::with( 'images' )->findOrFail( $id );
         return response()->json( $product );
     }
 

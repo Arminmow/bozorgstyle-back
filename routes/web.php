@@ -9,7 +9,7 @@ Route::get('/', function () {
 
 Route::get('/products', [ProductController::class, 'index']);
 
-Route::get('products/{id}', [ProductController::class, 'getProductById'])->where('id', '[0-9]+');
+Route::get('products/{id}', [ProductController::class, 'show'])->where('id', '[0-9]+');
 
 Route::get('products/men', [ProductController::class, 'getMenProducts']);
 
