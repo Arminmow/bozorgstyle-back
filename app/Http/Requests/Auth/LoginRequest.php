@@ -16,6 +16,7 @@ class LoginRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        \Log::info('Authorization check: ' . $this->user());
         return true;
     }
 
@@ -26,6 +27,7 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
+        \Log::info('Validation rules being applied.');
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
@@ -38,19 +40,28 @@ class LoginRequest extends FormRequest
      * @throws \Illuminate\Validation\ValidationException
      */
     public function authenticate(): void
-    {
-        $this->ensureIsNotRateLimited();
+{
+    \Log::info('Authentication attempt for ' . $this->input('email'));
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+    $this->ensureIsNotRateLimited();
 
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
-        }
+    $authenticated = Auth::attempt($this->only('email', 'password'), $this->boolean('remember'));
 
-        RateLimiter::clear($this->throttleKey());
-    }
+    \Log::info('Authentication attempt result:', ['authenticated' => $authenticated]);
+
+    if (!$authenticated) {
+        RateLimiter::hit($this->throttleKey());
+
+        // Log the failed authentication
+        \Log::info('Authentication failed for ' . $this->input('email'));
+
+        // Throw a ValidationException with a custom message
+        abort(401, __('auth.failed'));
+    }   
+
+    RateLimiter::clear($this->throttleKey());
+}
+
 
     /**
      * Ensure the login request is not rate limited.
