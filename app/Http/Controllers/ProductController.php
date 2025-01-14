@@ -36,14 +36,14 @@ class ProductController extends Controller {
     // Get all men's products
      public function getMenProducts()
      {
-         $menProducts = Product::where('gender', 'men')->get();
+         $menProducts = Product::where('gender', 'men')->with('images')->get();
          return response()->json($menProducts);  
      }
 
      // Get all women's products
 
     public function getWomenProducts() {
-        $womenProducts = Product::where( 'gender', 'women' )->get();
+        $womenProducts = Product::where( 'gender', 'women' )->with('images')->get();
         return response()->json( $womenProducts );
 
     }
