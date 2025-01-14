@@ -16,10 +16,12 @@ class CategoryController extends Controller
 
     // Get a specific category with its products
     public function show($id)
-    {
-        $category = Category::with('products')->findOrFail($id);
-        return response()->json($category);
-    }
+{
+    $category = Category::with(['products.images'])->findOrFail($id);
+    return response()->json($category);
+}
+
+
 
     // Create a new category
     public function store(Request $request)
