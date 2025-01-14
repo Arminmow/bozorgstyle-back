@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\CategoryController;
 
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -50,3 +51,9 @@ Route::post('/email/verification-notification', [EmailVerificationNotificationCo
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
+
+Route::get('/categories', [CategoryController::class, 'index']);         // Get all categories
+Route::get('/categories/{id}', [CategoryController::class, 'show']);    // Get category with products
+Route::post('/categories', [CategoryController::class, 'store']);       // Create a new category
+Route::put('/categories/{id}', [CategoryController::class, 'update']);  // Update category
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy']); // Delete category

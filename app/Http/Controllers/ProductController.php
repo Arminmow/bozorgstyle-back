@@ -21,9 +21,12 @@ class ProductController extends Controller {
         if ( $request->has( 'max_price' ) ) {
             $query->where( 'price', '<=', $request->input( 'max_price' ) );
         }
+        if ( $request->has( 'category_id' ) ) {
+            $query->where( 'category_id', $request->category_id );
+        }
 
         // Execute query and get results
-        $products = $query->with('images')->get();
+        $products = $query->with( 'images' )->get();
 
         return response()->json( $products );
     }
@@ -43,9 +46,21 @@ class ProductController extends Controller {
      // Get all women's products
 
     public function getWomenProducts() {
-        $womenProducts = Product::where( 'gender', 'women' )->with('images')->get();
+        $womenProducts = Product::where( 'gender', 'women' )->with( 'images' )->get();
         return response()->json( $womenProducts );
 
+    }
+
+    public function store( Request $request ) {
+        $validated = $request->validate( [
+            'name' => 'required|max:255',
+            'price' => 'required|numeric',
+            'description' => 'nullable|string',
+            'category_id' => 'nullable|exists:categories,id',
+        ] );
+
+        $product = Product::create( $validated );
+        return response()->json( $product, 201 );
     }
 
 }
