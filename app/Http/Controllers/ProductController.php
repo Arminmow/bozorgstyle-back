@@ -23,7 +23,7 @@ class ProductController extends Controller {
         }
 
         // Execute query and get results
-        $products = $query->get();
+        $products = $query->with('images')->get();
 
         return response()->json( $products );
     }
