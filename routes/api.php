@@ -10,7 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\AuthControllerh;
+use App\Http\Controllers\AuthController;
 
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
