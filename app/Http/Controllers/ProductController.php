@@ -24,6 +24,9 @@ class ProductController extends Controller {
         if ( $request->has( 'category_id' ) ) {
             $query->where( 'category_id', $request->category_id );
         }
+        if ($request->has('gender')) {
+            $query->where('gender', $request->gender);
+        }
 
         // Execute query and get results
         $products = $query->with( 'images' )->get();
