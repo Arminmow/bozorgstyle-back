@@ -41,7 +41,6 @@ Route::put('/categories/{id}', [CategoryController::class, 'update']);  // Updat
 
 Route::delete('/categories/{id}', [CategoryController::class, 'destroy']); // Delete category
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return response()->json(['user' => $request->user()]);
-// });
-
+Route::middleware([CheckRole::class.':admin'])->get('/admin-dashboard', function () {
+    return view('admin.dashboard');
+});
