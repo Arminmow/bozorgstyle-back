@@ -7,8 +7,8 @@ return [
     | Authentication Defaults
     |--------------------------------------------------------------------------
     |
-    | This option defines the default authentication "guard" and password
-    | reset "broker" for your application. You may change these values
+    | This option defines the default authentication 'guard' and password
+    | reset 'broker' for your application. You may change these values
     | as required, but they're a perfect start for most applications.
     |
     */
@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'api' => [
+            'driver' => 'jwt', // This tells Laravel to use JWT for API authentication
+            'provider' => 'users',
+        ],
     ],
 
     /*
@@ -58,6 +63,18 @@ return [
     | Supported: "database", "eloquent"
     |
     */
+
+    'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+
+    'api' => [
+        'driver' => 'jwt', // Set this to 'jwt' for tymon/jwt-auth
+        'provider' => 'users', // Use the 'users' provider for authentication
+    ],
+],
 
     'providers' => [
         'users' => [
@@ -93,7 +110,7 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'table' => env( 'AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens' ),
             'expire' => 60,
             'throttle' => 60,
         ],
@@ -110,6 +127,6 @@ return [
     |
     */
 
-    'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+    'password_timeout' => env( 'AUTH_PASSWORD_TIMEOUT', 10800 ),
 
 ];
