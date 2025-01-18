@@ -13,14 +13,22 @@ class CartController extends Controller {
         $user = $request->user();
 
         // Fetch cart items for the user
-        $cartItems = Cart::where( 'user_id', $user->id )
+        $cart = Cart::where( 'user_id', $user->id )
         ->with( 'product' ) // Assuming a relationship to get product details
-        ->get();
+        ->first();
+        // Use first() to get a single cart
 
-        // Return the cart items as JSON response
+        // Return the cart as JSON response
+        if ( $cart ) {
+            return response()->json( [
+                'success' => true,
+                'cart' => $cart, // Return a single cart object
+            ] );
+        }
+
         return response()->json( [
-            'success' => true,
-            'cart' => $cartItems,
+            'success' => false,
+            'message' => 'Cart not found',
         ] );
     }
 
