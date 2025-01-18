@@ -14,6 +14,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Middleware\JwtMiddleware;
+use App\Http\Controllers\ProductImageController;
 
 Route::get('/products', [ProductController::class, 'index']);
 
@@ -35,6 +36,8 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     // Cart-related routes
     Route::post('cart/add', [CartController::class, 'addToCart']);
     Route::get('cart', [CartController::class, 'view']);
+
+    Route::post('/product-images', [ProductImageController::class, 'store']);
 });
 
 Route::get('/categories', [CategoryController::class, 'index']);         // Get all categories
