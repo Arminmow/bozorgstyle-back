@@ -27,8 +27,13 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware([JwtMiddleware::class])->group(function () {
+    // User-related routes
     Route::get('user', [AuthController::class, 'getUser']);
     Route::post('logout', [AuthController::class, 'logout']);
+    
+    // Cart-related routes
+    Route::post('cart/add', [CartController::class, 'add']);
+    Route::get('cart', [CartController::class, 'view']);
 });
 
 Route::get('/categories', [CategoryController::class, 'index']);         // Get all categories

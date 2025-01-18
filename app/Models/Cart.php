@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Cart extends Model {
     use HasFactory;
 
-    protected $fillable = [ 'user_id', 'items' ];
-    // Allow mass assignment
-    protected $casts = [
-        'items' => 'array', // Automatically cast the JSON column to an array
-    ];
+    protected $fillable = ['user_id', 'product_id', 'quantity'];
 
-    public function user() {
-        return $this->belongsTo( User::class );
+    /**
+     * Relationship to Product model.
+     */
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 }
