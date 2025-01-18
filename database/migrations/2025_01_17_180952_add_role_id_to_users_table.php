@@ -12,8 +12,10 @@ return new class extends Migration
     public function up()
 {
     Schema::table('users', function (Blueprint $table) {
-        $table->foreignId('role_id')->constrained('roles')->default(2); // 'customer' by default
+        $table->unsignedBigInteger('role_id')->default(2); // 'customer' by default
+        $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
     });
+    
 }
 
 public function down()
