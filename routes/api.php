@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Middleware\JwtMiddleware;
 
@@ -27,8 +28,13 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware([JwtMiddleware::class])->group(function () {
+    // User-related routes
     Route::get('user', [AuthController::class, 'getUser']);
     Route::post('logout', [AuthController::class, 'logout']);
+    
+    // Cart-related routes
+    Route::post('cart/add', [CartController::class, 'addToCart']);
+    Route::get('cart', [CartController::class, 'view']);
 });
 
 Route::get('/categories', [CategoryController::class, 'index']);         // Get all categories
