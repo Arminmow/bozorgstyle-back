@@ -24,8 +24,8 @@ class ProductController extends Controller {
         if ( $request->has( 'category_id' ) ) {
             $query->where( 'category_id', $request->category_id );
         }
-        if ($request->has('gender')) {
-            $query->where('gender', $request->gender);
+        if ( $request->has( 'gender' ) ) {
+            $query->where( 'gender', $request->gender );
         }
 
         // Execute query and get results
@@ -55,15 +55,45 @@ class ProductController extends Controller {
     }
 
     public function store( Request $request ) {
-        $validated = $request->validate( [
-            'name' => 'required|max:255',
+        // Validate the input data
+        $validator = Validator::make( $request->all(), [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
             'price' => 'required|numeric',
-            'description' => 'nullable|string',
-            'category_id' => 'nullable|exists:categories,id',
+            'gender' => 'required|in:men,women',
+            'category_id' => 'required|integer|exists:categories,id', // Assuming you have a categories table
         ] );
 
-        $product = Product::create( $validated );
-        return response()->json( $product, 201 );
+        // Return validation errors if any
+        if ( $validator->fails() ) {
+            return response()->json( [
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 400 );
+        }
+
+        try {
+            // Create a new product in the database
+            $product = Product::create( [
+                'name' => $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'gender' => $request->gender,
+                'category_id' => $request->category_id,
+            ] );
+
+            return response()->json( [
+                'success' => true,
+                'product' => $product,
+            ], 201 );
+
+        } catch ( \Exception $e ) {
+            // Handle any errors and return failure response
+            return response()->json( [
+                'success' => false,
+                'message' => 'Error creating product',
+            ], 500 );
+        }
     }
 
 }

@@ -38,6 +38,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('cart', [CartController::class, 'view']);
 
     Route::post('/product-images', [ProductImageController::class, 'store']);
+    Route::post('/products/add', [ProductController::class, 'store']);
 });
 
 Route::get('/categories', [CategoryController::class, 'index']);         // Get all categories
