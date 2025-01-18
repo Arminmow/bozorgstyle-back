@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\Cart;
 
 class CartController extends Controller {
 
@@ -40,14 +42,24 @@ class CartController extends Controller {
 
         // Update the items in the cart
         $items = $cart->items ?? [];
-        if (isset($items[$productId])) {
-            $items[$productId] += $quantity; // Increment quantity
-        } else {
-            $items[$productId] = $quantity; // Add new product
+        
+        $found = false;
+        foreach ($items as &$item) {
+            if ($item['product_id'] == $productId) {
+                $item['quantity'] += $quantity; // Increment the quantity
+                $found = true;
+                break;
+            }
         }
+        // If product isn't found, add it to the cart
+        if ( !$found ) {
+            $items[] = [ 'product_id' => $productId, 'quantity' => $quantity ];
+        }
+
+        // Save the updated cart
         $cart->items = $items;
         $cart->save();
 
-        return response()->json(['message' => 'Product added to cart.', 'cart' => $cart ] );
+        return response()->json( [ 'message' => 'Product added to cart.', 'cart' => $cart ] );
     }
 }
