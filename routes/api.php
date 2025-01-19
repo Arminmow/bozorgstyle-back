@@ -37,7 +37,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::post('cart/add', [CartController::class, 'addToCart']);
     Route::get('cart', [CartController::class, 'view']);
 
-    Route::post('/product-images', [ProductImageController::class, 'store']);
+    Route::post('/product-images/add', [ProductImageController::class, 'store']);
     Route::post('/products/add', [ProductController::class, 'store']);
 });
 
