@@ -74,42 +74,42 @@ class CartController extends Controller {
     public function removeFromCart( Request $request ) {
         $user = $request->user();
         $productId = $request->input( 'product_id' );
-        // No need for quantity input, it's always 1
 
         // Get the user's cart
-        $cart = Cart::where( 'user_id', $user->id )->first();
-        if ( !$cart ) {
-            return response()->json( [ 'error' => 'Cart not found.' ], 404 );
-        }
+    $cart = Cart::where('user_id', $user->id)->first();
 
-        // Get the current items in the cart
-        $items = $cart->items ?? [];
-        $updatedItems = [];
-        $itemFound = false;
-
-        foreach ( $items as $item ) {
-            if ( $item[ 'product_id' ] == $productId ) {
-                // Decrease the quantity by 1
-                $item[ 'quantity' ] -= 1;
-
-                // If quantity goes to 0 or below, remove the item
-                if ( $item[ 'quantity' ] <= 0 ) {
-                    continue;
-                }
-                $itemFound = true;
-            }
-
-            $updatedItems[] = $item;
-            // Keep the remaining items
-        }
-
-        // If the item was found and updated, save the cart
-        if ( $itemFound ) {
-            $cart->items = $updatedItems;
-            $cart->save();
-            return response()->json( [ 'message' => 'Item quantity updated.', 'cart' => $cart ] );
-        }
-
-        return response()->json( [ 'error' => 'Item not found in cart.' ], 404 );
+    if (!$cart) {
+        return response()->json(['error' => 'Cart not found'], 404);
     }
+
+    // Check if the product is in the cart
+    $found = false;
+    $items = $cart->items ?? [];
+
+    foreach ($items as &$item) {
+        if ($item['product_id'] == $productId) {
+            $found = true;
+
+            if ($item['quantity'] > 1) {
+                // If quantity is greater than 1, decrease it by 1
+                $item['quantity'] -= 1;
+            } else {
+                // If quantity is 1, remove the item from the cart
+                $items = array_filter($items, fn($i) => $i['product_id'] !== $productId);
+            }
+            break;
+        }
+    }
+
+    if (!$found) {
+        return response()->json(['error' => 'Product not found in cart'], 404);
+    }
+
+    // Save the updated cart
+    $cart->items = array_values($items); // Re-index the array after removing item
+    $cart->save();
+
+    return response()->json(['message' => 'Product removed from cart or quantity decreased', 'cart' => $cart ] );
+    }
+
 }
