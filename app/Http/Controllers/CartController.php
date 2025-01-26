@@ -70,4 +70,46 @@ class CartController extends Controller {
 
         return response()->json( [ 'message' => 'Product added to cart.', 'cart' => $cart ] );
     }
+
+    public function removeFromCart( Request $request ) {
+        $user = $request->user();
+        $productId = $request->input( 'product_id' );
+        $quantityToRemove = $request->input( 'quantity', 1 );
+        // Default to 1 if not provided
+
+        // Get the user's cart
+        $cart = Cart::where('user_id', $user->id)->first();
+        if (!$cart) {
+            return response()->json(['error' => 'Cart not found.'], 404);
+        }
+
+        // Get the current items in the cart
+        $items = $cart->items ?? [];
+        $updatedItems = [];
+        $itemFound = false;
+
+        foreach ($items as $item) {
+            if ($item['product_id'] == $productId) {
+                // Decrease the quantity
+                $item['quantity'] -= $quantityToRemove;
+
+                // If quantity goes to 0 or below, remove the item
+                if ($item['quantity'] <= 0) {
+                    continue;
+                }
+                $itemFound = true;
+            }
+
+            $updatedItems[] = $item; // Keep the remaining items
+        }
+
+        // If the item was found and updated, save the cart
+        if ($itemFound) {
+            $cart->items = $updatedItems;
+            $cart->save();
+            return response()->json(['message' => 'Item quantity updated.', 'cart' => $cart]);
+        }
+
+        return response()->json(['error' => 'Item not found in cart.' ], 404 );
+    }
 }

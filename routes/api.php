@@ -32,6 +32,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     // Cart-related routes
     Route::post('cart/add', [CartController::class, 'addToCart']);
     Route::get('cart', [CartController::class, 'view']);
+    Route::post('/cart/remove', [CartController::class, 'removeFromCart']);
 });
 
 // Admin Routes (protected by role check)
