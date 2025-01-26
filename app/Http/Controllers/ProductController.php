@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 
-
 class ProductController extends Controller {
     public function index( Request $request ) {
         $query = Product::query();
@@ -94,6 +93,45 @@ class ProductController extends Controller {
             return response()->json( [
                 'success' => false,
                 'message' => 'Error creating product',
+            ], 500 );
+        }
+    }
+
+    public function update( Request $request, $id ) {
+        // Validate the input data
+        $validator = Validator::make( $request->all(), [
+            'name' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string',
+            'price' => 'sometimes|numeric',
+            'gender' => 'sometimes|in:men,women',
+            'category_id' => 'sometimes|integer|exists:categories,id',
+        ] );
+
+        // Return validation errors if any
+        if ( $validator->fails() ) {
+            return response()->json( [
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 400 );
+        }
+
+        try {
+            // Find the product by ID or return a 404 error
+            $product = Product::findOrFail( $id );
+
+            // Update the product fields
+            $product->update( $request->only( [ 'name', 'description', 'price', 'gender', 'category_id' ] ) );
+
+            return response()->json( [
+                'success' => true,
+                'product' => $product,
+            ] );
+
+        } catch ( \Exception $e ) {
+            // Handle any errors and return failure response
+            return response()->json( [
+                'success' => false,
+                'message' => 'Error updating product',
             ], 500 );
         }
     }

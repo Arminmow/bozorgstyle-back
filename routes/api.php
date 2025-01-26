@@ -54,3 +54,5 @@ Route::delete('/categories/{id}', [CategoryController::class, 'destroy']); // De
 Route::middleware([CheckRole::class.':admin'])->get('/admin-dashboard', function () {
     return view('admin.dashboard');
 });
+
+Route::put('/products/update/{id}', [ProductController::class, 'update']);
